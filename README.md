@@ -41,12 +41,12 @@
 
 **Желательно:**
 ```swift
-let loadingColor = UIColor.white()
+let loadingColor = UIColor.white
 ```
 
 **Нежелательно:**
 ```swift
-let zagruzkaColor = UIColor.white()
+let zagruzkaColor = UIColor.white
 ```
 
 ## Общее
@@ -201,18 +201,17 @@ let z = x.appending(y)
 
 ### Перечислимые типы
 
-Элементы перечислимого типа именовать в camelCase, начиная с маленькой буквы, если используется Swift 3 версии, и с большой для 2-й, соответственно:
+Элементы перечислимого типа именовать в camelCase, начиная с маленькой буквы.
 
 ```swift
 // Swift 3
 enum Direction {
-    case up, down, left, right
+    case up
+    case down
+    case left
+    case right
 }
 
-// Swift 2
-enum Direction {
-    case Up, Down, Left, Right
-}
 ```
 
 ### Протоколы
@@ -236,24 +235,25 @@ enum Direction {
 Класс имеет следующую структуру:
 
 ```swift
-// MARK: Global operators taking the class as a params
-func == (lhs: MyClass, rhs: MyClass) -> Bool { ... }
 
 // MARK: Class
 class MyClass: BaseClass {
     
+    // MARK: Static operators taking the class as a params
+    static unc == (lhs: MyClass, rhs: MyClass) -> Bool { ... }
+    
     // MARK: Declarations
     
     // 1.1. Outlets
-    @IBOutlet private weak let titleLabel: UILabel!
+    @IBOutlet private weak var titleLabel: UILabel!
     
     // [1.1]. Publish subjects and observables [only if Rx is used]
     var citySelected: PublishSubject<City>? = nil
     
     // 1.2. Public properties, calculated and lazy
-    var text: String { get { ... } set { ... } }
+    public var text: String { get { ... } set { ... } }
     
-    // 1.3. Private properties
+    // 1.3. Internal and private properties
     private let isUsingLasers = true
     
     // MARK: Lifecycle
@@ -403,12 +403,12 @@ enum Colors {
 
 ### Опционалы
 
-* Не использовать `!` при объявлении переменных! Исключений всего 2: это взаимодействие с Objective-C кодом и невозможность вычислить инициализирующее значения до достижения некоторых условий. Например, нельзя прочитать `frame` некоторой `UIView` до того, как она загружена из `xib`:
+* Не использовать `!` при объявлении переменных! Исключениt всего 1: это взаимодействие с Objective-C кодом:
 
 ```swift
 class MyView : UIView {
     @IBOutlet var button : UIButton!
-    var buttonOriginalWidth : CGFloat!
+    var buttonOriginalWidth : CGFloat?
 
     override func awakeFromNib() {
         self.buttonOriginalWidth = self.button.frame.size.width
@@ -416,13 +416,14 @@ class MyView : UIView {
 }
 ```
 
-* Не использовать `!` для force unwrapping. Вместо этого использовать `?.` или `if-let` конструкции.
+* Не использовать `!` для force unwrapping. Вместо этого использовать `?.` или `if-let` конструкции, а желательно `guard-let`.
 
 ```swift 
 let latitude = me.homeTown?.location?.latitude
-if let town = me.homeTown, location = town.location {
-    // access latitude, longitude
+guard let town = me.homeTown, let location = town.location {
+    return
 }
+// access latitude, longitude
 ```
 
 ### Структуры
